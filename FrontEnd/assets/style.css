@@ -3,19 +3,87 @@
    License: none (public domain)
 */
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -23,59 +91,82 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
 	display: block;
 }
+
 body {
 	line-height: 1;
 }
-ol, ul {
+
+ol,
+ul {
 	list-style: none;
 }
-blockquote, q {
+
+blockquote,
+q {
 	quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
 	content: '';
 	content: none;
 }
+
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
 /** end reset css**/
 body {
 	max-width: 1140px;
-	margin:auto;
-	font-family: 'Work Sans' ;
+	margin: auto;
+	font-family: 'Work Sans';
 	font-size: 14px;
 	margin-top: 80px;
 }
+
 header {
 	display: flex;
 	justify-content: space-between;
 	margin: 50px 0
 }
+
 section {
 	margin: 50px 0
 }
-.blackBackground{ 
- background: black;
- color: white;
- display: flex;
- position: fixed;
- top: 0px;
- left: 0px;
- height: 35px;
- padding-top: 15px;
- width: 100%;
- justify-content: center;
+
+.blackBackground {
+	background: black;
+	color: white;
+	display: flex;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	height: 35px;
+	padding-top: 15px;
+	width: 100%;
+	justify-content: center;
 }
 
-h1{
+h1 {
 	display: flex;
 	flex-direction: column;
 	font-family: 'Syne';
@@ -84,25 +175,27 @@ h1{
 	color: #B1663C
 }
 
-h1 > span {
+h1>span {
 	font-family: 'Work Sans';
-	font-size:10px;
+	font-size: 10px;
 	letter-spacing: 0.1em;
-;
+	;
 }
 
-h2{
+h2 {
 	font-family: 'Syne';
 	font-weight: 700;
 	font-size: 30px;
 	color: #1D6154
 }
+
 nav ul {
 	display: flex;
 	align-items: center;
 	list-style-type: none;
 
 }
+
 nav li {
 	padding: 0 10px;
 	font-size: 1.2em;
@@ -111,13 +204,16 @@ nav li {
 li:hover {
 	color: #B1663C;
 }
+
 #introduction {
 	display: flex;
 	align-items: center;
 }
+
 #introduction figure {
 	flex: 1
 }
+
 #introduction img {
 	display: block;
 	margin: auto;
@@ -127,6 +223,7 @@ li:hover {
 #introduction article {
 	flex: 1
 }
+
 #introduction h2 {
 	margin-bottom: 1em;
 }
@@ -134,17 +231,20 @@ li:hover {
 #introduction p {
 	margin-bottom: 0.5em;
 }
-#portfolio > div:first-child{
+
+#portfolio>div:first-child {
 	display: flex;
 	justify-content: center;
-    align-items: center;
-    gap: 25px;
+	align-items: center;
+	gap: 25px;
 	margin-bottom: 40px;
 }
-#portfolio > div:first-child aside{
+
+#portfolio>div:first-child aside {
 	display: none;
 	cursor: pointer;
 }
+
 #portfolio .gallery {
 	width: 100%;
 	display: grid;
@@ -156,7 +256,8 @@ li:hover {
 #portfolio .gallery img {
 	width: 100%;
 }
-#dialogBack{
+
+#dialogBack {
 	width: 100%;
 	height: 100%;
 	background: black;
@@ -167,7 +268,8 @@ li:hover {
 	left: 0;
 	display: none;
 }
-#dialogBox{
+
+#dialogBox {
 	width: 55%;
 	padding-bottom: 60px;
 	position: fixed;
@@ -180,45 +282,126 @@ li:hover {
 	display: none;
 }
 
-#dialogBox .gallery{
+#dialogBox .gallery {
 	width: 80%;
 	margin: auto;
 	display: flex;
 	flex-wrap: wrap;
 }
 
-#dialogBox h2{
+#dialogBox h2 {
 	text-align: center;
 	padding: 35px;
 }
 
-#dialogBox .gallery img {
-	width: 90px;
+#dialogBox .gallery figure {
 	margin-right: 20px;
 	margin-bottom: 20px;
+	position: relative;
 }
-#dialogBox .gallery figcaption{
+
+#dialogBox .gallery figure i {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	color: white;
+	cursor: pointer;
+}
+
+#dialogBox .gallery img {
+	width: 90px;
+}
+
+#close {
+	margin: 30px 30px;
+	font-size: 30px;
+	text-align: right;
+}
+
+#page2 {
 	display: none;
 }
-#close{
+
+#dialogBox button {
+	font-size: 14px;
+	padding: 8px 60px 8px 60px;
+	margin: auto;
+	display: block;
+	border-radius: 30px;
+	font-size: 17px;
 	cursor: pointer;
-	margin: 30px 30px;
-    font-size: 30px;
+
 }
+
+#page1 button {
+	color: white;
+	background: #1D6154;
+	border: 1px solid;
+}
+
+#page2 button {
+	color: #306685;
+	background: #CBD6DC;
+	border-width: 0px;
+	margin-bottom: 10px;
+}
+
+#addImg {
+	text-align: center;
+}
+
+#inputs {
+	width: 80%;
+	margin: auto;
+	margin-top: 60px;
+}
+
+#inputs input,
+#inputs label {
+	width: 100%;
+	margin: auto;
+	display: block;
+	box-sizing: border-box;
+
+
+}
+
+#inputs label {
+	margin-bottom: 10px;
+
+}
+
+#inputs input {
+	margin-bottom: 50px;
+	padding: 10px;
+	border-width: 0px;
+	box-shadow: gray 1px 1px 1px;
+
+}
+
+#close i,
+#back i {
+	cursor: pointer;
+
+}
+
 #formSection {
 	width: 50%;
-margin: auto;
+	margin: auto;
 }
-#formSection > * {
+
+#formSection>* {
 	text-align: center;
 
 }
-#formSection h2{
+
+#formSection h2 {
 	margin-bottom: 20px;
 }
+
 #formSection form {
 	text-align: left;
-	margin-top:30px;
+	margin-top: 30px;
 	display: flex;
 	flex-direction: column;
 }
@@ -231,9 +414,11 @@ margin: auto;
 	padding-left: 10px;
 	padding-right: 10px;
 }
+
 #formSection label {
 	margin: 2em 0 1em 0;
 }
+
 #formSection textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
@@ -241,15 +426,15 @@ margin: auto;
 	padding-right: 10px;
 }
 
-input[type="submit"]{
+input[type="submit"] {
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;
 	background-color: #1D6154;
-	margin : 2em auto ;
+	margin: 2em auto;
 	width: 180px;
 	text-align: center;
-	border-radius: 60px ;
+	border-radius: 60px;
 }
 
 footer nav ul {
@@ -258,19 +443,16 @@ footer nav ul {
 	margin: 2em
 }
 
-
-
-
-
-.formulaire{
+.formulaire {
 	display: flex;
 	margin-bottom: 35px;
 	gap: 1em;
 	justify-content: center;
 }
-.formulaire li{
+
+.formulaire li {
 	padding: 1em;
-    border-radius: 30px;
+	border-radius: 30px;
 	border: solid 2px #1c6c0e;
 	padding: 10px 20px;
 
@@ -279,13 +461,14 @@ footer nav ul {
 	font-family: 'Syne';
 	color: #1c6c0e;
 }
-.formulaire li:hover{
+
+.formulaire li:hover {
 	cursor: pointer;
 	background-color: #1c6c0e;
 	color: white;
 }
 
-a[href="login.html"]{
+a[href="login.html"] {
 	text-decoration: none;
 	color: black;
 }

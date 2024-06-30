@@ -77,8 +77,28 @@
 		<div id="dialogBack"></div>
 		<aside id="dialogBox">
 			<div id="close"><i class="fa-solid fa-xmark"></i></div>
-			<h2>Galerie Photo</h2>
-			<div class="gallery"></div>
+			<div id="page1">
+				<h2>Galerie Photo</h2>
+				<div class="gallery"></div>
+				<button id="toPage2">Ajouter une photo</button>
+			</div>
+			<div id="page2">
+				<div id="back"><i class="fas fa-arrow-left"></i></div>
+				<h2>Ajout photo</h2>
+				<form>
+					<div id="addImg">
+						<button>+ Ajouter une photo</button>
+						jpg, png: 4mo max
+					</div>
+					<div id="inputs">
+						<label for="title">Titre</label>
+						<input id="title" type="text" />
+						<label for="category">Catégorie</label>
+						<input id="category" type="text" />
+						<input type="submit" value="Valider" />
+					</div>
+				</form>
+			</div>
 		</aside>
 	</main>
 

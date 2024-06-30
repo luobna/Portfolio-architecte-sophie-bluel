@@ -1,5 +1,4 @@
 let jsonList, gallery = document.querySelector('#portfolio .gallery'), dialogBoxGallery = document.querySelector('#dialogBox .gallery');
-const authToken = localStorage.getItem('authToken');
 (function () {
     fetch('http://localhost:5678/api/works')
         .then(response => {
@@ -12,18 +11,30 @@ const authToken = localStorage.getItem('authToken');
         .then(list => {
             jsonList = list;
             console.log(jsonList); // Utiliser les données reçues
-            dialogBoxGallery.innerHTML = gallery.innerHTML = getHtmlList(jsonList);
+            gallery.innerHTML = getHtmlList(jsonList);
+            dialogBoxGallery.innerHTML = getHtmlList(jsonList, true);
+            document.querySelectorAll('#page1 .gallery figure i').forEach(icon => {
+                icon.addEventListener('click', function () {
+                    deleteItem(this.dataset.id);
+                });
+            });
         })
         .catch(error => {
             console.error('There has been a problem with your fetch operation:', error);
         });
 })();
 
-function getHtmlList(list) {
+function getHtmlList(list, forDialog = null) {
     let htmlList = '';
-    list.forEach(item => {
-        htmlList += getHtmlItem(item);
-    });
+    if (forDialog) {
+        list.forEach(item => {
+            htmlList += getDialogHtmlItem(item);
+        });
+    } else {
+        list.forEach(item => {
+            htmlList += getHtmlItem(item);
+        });
+    }
     return htmlList;
 }
 
@@ -48,25 +59,72 @@ function getHtmlItem(item) {
     `;
 }
 
+function getDialogHtmlItem(item) {
+    return `
+    <figure>
+        <img src="${item.imageUrl}" alt="${item.title}">
+        <i data-id="${item.id}" class="fa fa-trash"></i>
+    </figure>
+    `;
+}
+
 window.addEventListener('load', () => {
-    if (authToken){
-        document.getElementById('log').innerHTML = '<a href="" target="_blank">logout</a>';
+    if (localStorage.getItem('authToken')) {
+        document.getElementById('log').innerHTML = '<a id="logout" href="#">logout</a>';
+        document.getElementById('logout').addEventListener('click', logout);
         document.querySelector('#portfolio > div aside').style.display = 'block';
     }
     else
-        document.getElementById('log').innerHTML = '<a href="login.html" target="_blank">login</a>';
+        document.getElementById('log').innerHTML = '<a href="login.html">login</a>';
 });
 
-let openModal = function (){
+let openModal = function () {
     document.querySelector('#dialogBack').style.display = 'block';
     document.querySelector('#dialogBox').style.display = 'block';
 },
-closeModal = function (){
-    document.querySelector('#dialogBox').style.display = 'none';
-    document.querySelector('#dialogBack').style.display = 'none';
-}
+    closeModal = function () {
+        document.querySelector('#dialogBox').style.display = 'none';
+        document.querySelector('#dialogBack').style.display = 'none';
+    },
+    openPage2 = function () {
+        document.querySelector('#page1').style.display = 'none';
+        document.querySelector('#page2').style.display = 'block';
+    },
+    openPage1 = function () {
+        document.querySelector('#page2').style.display = 'none';
+        document.querySelector('#page1').style.display = 'block';
+    },
+    logout = function () {
+        localStorage.removeItem('authToken'); // supprimer
+        location.reload();// recharger
+    };
+
+function deleteItem(itemId) {
+    fetch(`http://localhost:5678/api/works/${itemId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }).then(response => {
+        console.log(response);
+        if (!response.ok) {
+            if(response.status == 401);
+            alert("You are unauthorized to delete");
+            throw new Error('Network response was not ok');
+        } else {
+            alert("Item deleted successfully");
+        }
+    }).catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+    });
+};
+
+
 document.querySelector('#portfolio > div aside').addEventListener('click', openModal);
-document.querySelector('#close').addEventListener('click', closeModal);
+document.querySelector('#close i').addEventListener('click', closeModal);
+document.querySelector('#dialogBack').addEventListener('click', closeModal);
+document.querySelector('#toPage2').addEventListener('click', openPage2);
+document.querySelector('#back i').addEventListener('click', openPage1);
 
 
 
