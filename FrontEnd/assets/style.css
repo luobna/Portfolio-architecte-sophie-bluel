@@ -348,8 +348,14 @@ li:hover {
 
 #addImg {
 	text-align: center;
+	background-color: #E8F1F6;
+	margin: 0 65px;
+    padding: 25px;
 }
 
+#addImg i{
+	font-size: 95px;
+}
 #inputs {
 	width: 80%;
 	margin: auto;
@@ -373,10 +379,10 @@ li:hover {
 
 #inputs input {
 	margin-bottom: 50px;
-	padding: 10px;
-	border-width: 0px;
 	box-shadow: gray 1px 1px 1px;
-
+	padding: 15px;
+    border: none;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
 #close i,
@@ -430,7 +436,7 @@ input[type="submit"] {
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;
-	background-color: #1D6154;
+	background-color: #A7A7A7;
 	margin: 2em auto;
 	width: 180px;
 	text-align: center;

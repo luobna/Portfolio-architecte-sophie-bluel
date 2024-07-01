@@ -15,7 +15,7 @@ let jsonList, gallery = document.querySelector('#portfolio .gallery'), dialogBox
             dialogBoxGallery.innerHTML = getHtmlList(jsonList, true);
             document.querySelectorAll('#page1 .gallery figure i').forEach(icon => {
                 icon.addEventListener('click', function () {
-                    deleteItem(this.dataset.id);
+                    deleteItem(icon.parentElement, icon.dataset.id);
                 });
             });
         })
@@ -24,7 +24,7 @@ let jsonList, gallery = document.querySelector('#portfolio .gallery'), dialogBox
         });
 })();
 
-function getHtmlList(list, forDialog = null) {
+function getHtmlList(list, forDialog=null) {
     let htmlList = '';
     if (forDialog) {
         list.forEach(item => {
@@ -52,7 +52,7 @@ function filter(nbrCategory = null) {
 
 function getHtmlItem(item) {
     return `
-    <figure>
+    <figure id="${item.id}">
         <img src="${item.imageUrl}" alt="${item.title}">
         <figcaption>${item.title}</figcaption>
     </figure>
@@ -99,7 +99,7 @@ let openModal = function () {
         location.reload();// recharger
     };
 
-function deleteItem(itemId) {
+function deleteItem(item, itemId) {
     fetch(`http://localhost:5678/api/works/${itemId}`, {
         method: 'DELETE',
         headers: {
@@ -112,6 +112,8 @@ function deleteItem(itemId) {
             alert("You are unauthorized to delete");
             throw new Error('Network response was not ok');
         } else {
+            item.remove(); // remove from DialogBox
+            document.getElementById(`${itemId}`).remove(); // remove from gallery
             alert("Item deleted successfully");
         }
     }).catch(error => {
