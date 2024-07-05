@@ -306,6 +306,9 @@ li:hover {
 	top: 10px;
 	color: white;
 	cursor: pointer;
+	background: black;
+	border-radius: 5px;
+    padding: 5px;
 }
 
 #dialogBox .gallery img {
@@ -317,12 +320,18 @@ li:hover {
 	font-size: 30px;
 	text-align: right;
 }
+#back {
+	font-size: 30px;
+	position: absolute;
+	top: 20px;
+	left: 20px;
+}
 
 #page2 {
 	display: none;
 }
 
-#dialogBox button {
+#dialogBox button, #addImg label{
 	font-size: 14px;
 	padding: 8px 60px 8px 60px;
 	margin: auto;
@@ -345,6 +354,15 @@ li:hover {
 	border-width: 0px;
 	margin-bottom: 10px;
 }
+#addImg label {
+	color: #306685;
+	background: #CBD6DC;
+	border-width: 0px;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	width: 230px;
+    padding: 10px 5px 11px 5px;
+}
 
 #addImg {
 	text-align: center;
@@ -363,13 +381,12 @@ li:hover {
 }
 
 #inputs input,
+#inputs select,
 #inputs label {
 	width: 100%;
 	margin: auto;
 	display: block;
 	box-sizing: border-box;
-
-
 }
 
 #inputs label {
@@ -377,16 +394,16 @@ li:hover {
 
 }
 
-#inputs input {
-	margin-bottom: 50px;
+#inputs input, #inputs select{
+	margin-bottom: 30px;
 	box-shadow: gray 1px 1px 1px;
 	padding: 15px;
     border: none;
     box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
-#close i,
-#back i {
+#close,
+#back {
 	cursor: pointer;
 
 }
@@ -436,7 +453,7 @@ input[type="submit"] {
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;
-	background-color: #A7A7A7;
+	background-color:#A7A7A7;
 	margin: 2em auto;
 	width: 180px;
 	text-align: center;
@@ -461,7 +478,6 @@ footer nav ul {
 	border-radius: 30px;
 	border: solid 2px #1c6c0e;
 	padding: 10px 20px;
-
 	font-size: 17px;
 	font-weight: bold;
 	font-family: 'Syne';

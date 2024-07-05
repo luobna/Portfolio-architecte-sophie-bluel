@@ -22,7 +22,24 @@ let jsonList, gallery = document.querySelector('#portfolio .gallery'), dialogBox
         .catch(error => {
             console.error('There has been a problem with your fetch operation:', error);
         });
+        fetch('http://localhost:5678/api/categories')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(categories => {
+            document.getElementById('category').innerHTML = '<option value="0" selected></option>';
+            categories.forEach(category => {
+                document.getElementById('category').innerHTML += `<option value="${category.id}">${category.name}</option>`;
+            });
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
 })();
+
 
 function getHtmlList(list, forDialog=null) {
     let htmlList = '';
@@ -38,17 +55,6 @@ function getHtmlList(list, forDialog=null) {
     return htmlList;
 }
 
-function filter(nbrCategory = null) {
-    if (nbrCategory) {
-        let htmlList = '';
-        jsonList.forEach(item => {
-            if (item.categoryId == nbrCategory) htmlList += getHtmlItem(item);
-        });
-        gallery.innerHTML = htmlList;
-    } else {
-        gallery.innerHTML = getHtmlList(jsonList);
-    }
-}
 
 function getHtmlItem(item) {
     return `
@@ -73,9 +79,12 @@ window.addEventListener('load', () => {
         document.getElementById('log').innerHTML = '<a id="logout" href="#">logout</a>';
         document.getElementById('logout').addEventListener('click', logout);
         document.querySelector('#portfolio > div aside').style.display = 'block';
+        document.querySelector('body .blackBackground').style.display= 'none'
     }
     else
         document.getElementById('log').innerHTML = '<a href="login.html">login</a>';
+        document.querySelector('body .blackBackground').style.display= 'flex'
+
 });
 
 let openModal = function () {
@@ -138,3 +147,40 @@ document.getElementById('filter-hotels').addEventListener('click', () => filter(
 
 
 
+document.getElementById('fileInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            const preview = document.getElementById('preview');
+            preview.innerHTML = '';
+            preview.appendChild(img);
+        }
+        reader.readAsDataURL(file);
+    }
+});
+document.getElementById('addImg').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    if (file) {
+        const formData = new FormData();
+        formData.append('photo', file);
+
+        fetch('http://localhost:5678/api-docs/#/default/post_works', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = 'Image téléchargée avec succès : ' + data.message;
+        })
+        .catch(error => {
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = 'Erreur lors du téléchargement de l\'image : ' + error.message;
+        });
+    }
+});
