@@ -79,11 +79,11 @@ window.addEventListener('load', () => {
         document.getElementById('log').innerHTML = '<a id="logout" href="#">logout</a>';
         document.getElementById('logout').addEventListener('click', logout);
         document.querySelector('#portfolio > div aside').style.display = 'block';
-        document.querySelector('body .blackBackground').style.display= 'none'
+        document.querySelector('body .blackBackground').style.display= 'flex'
     }
     else
         document.getElementById('log').innerHTML = '<a href="login.html">login</a>';
-        document.querySelector('body .blackBackground').style.display= 'flex'
+        document.querySelector('body .blackBackground').style.display= 'none'
 
 });
 
@@ -135,7 +135,7 @@ document.querySelector('#portfolio > div aside').addEventListener('click', openM
 document.querySelector('#close i').addEventListener('click', closeModal);
 document.querySelector('#dialogBack').addEventListener('click', closeModal);
 document.querySelector('#toPage2').addEventListener('click', openPage2);
-document.querySelector('#back i').addEventListener('click', openPage1);
+document.querySelector('#back').addEventListener('click', openPage1);
 
 
 
@@ -158,19 +158,24 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
             preview.innerHTML = '';
             preview.appendChild(img);
         }
-        reader.readAsDataURL(file);
+       reader.readAsDataURL(file);
     }
 });
-document.getElementById('addImg').addEventListener('submit', function(event) {
+document.getElementById('addImageForm').addEventListener('submit', function(event) {
     event.preventDefault();
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
     if (file) {
         const formData = new FormData();
-        formData.append('photo', file);
+        formData.append('image', file);
+        formData.append('title', title.value);
+        formData.append('category', parseInt(category.value));
 
-        fetch('http://localhost:5678/api-docs/#/default/post_works', {
+        fetch('http://localhost:5678/api/works', {
             method: 'POST',
+            headers: {
+                "Authorization": "Bearer "+localStorage.authToken
+            },
             body: formData
         })
         .then(response => response.json())
