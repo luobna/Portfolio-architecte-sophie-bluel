@@ -1,5 +1,5 @@
 let jsonList, gallery = document.querySelector('#portfolio .gallery'), dialogBoxGallery = document.querySelector('#dialogBox .gallery');
-(function () {
+function loadWorks() {
     fetch('http://localhost:5678/api/works')
         .then(response => {
             console.log(response)
@@ -22,7 +22,7 @@ let jsonList, gallery = document.querySelector('#portfolio .gallery'), dialogBox
         .catch(error => {
             console.error('There has been a problem with your fetch operation:', error);
         });
-        fetch('http://localhost:5678/api/categories')
+    fetch('http://localhost:5678/api/categories')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -38,10 +38,11 @@ let jsonList, gallery = document.querySelector('#portfolio .gallery'), dialogBox
         .catch(error => {
             console.error('There has been a problem with your fetch operation:', error);
         });
-})();
+};
 
+loadWorks();
 
-function getHtmlList(list, forDialog=null) {
+function getHtmlList(list, forDialog = null) {
     let htmlList = '';
     if (forDialog) {
         list.forEach(item => {
@@ -79,13 +80,13 @@ window.addEventListener('load', () => {
         document.getElementById('log').innerHTML = '<a id="logout" href="#">logout</a>';
         document.getElementById('logout').addEventListener('click', logout);
         document.querySelector('#portfolio > div aside').style.display = 'block';
-        document.querySelector('body .blackBackground').style.display= 'flex'
+        document.querySelector('body .blackBackground').style.display = 'flex'
     }
-    else{
+    else {
         document.getElementById('log').innerHTML = '<a href="login.html">login</a>';
-        document.querySelector('body .blackBackground').style.display= 'none'
+        document.querySelector('body .blackBackground').style.display = 'none'
     }
-        
+
 
 });
 
@@ -119,7 +120,7 @@ function deleteItem(item, itemId) {
     }).then(response => {
         console.log(response);
         if (!response.ok) {
-            if(response.status == 401);
+            if (response.status == 401);
             alert("You are unauthorized to delete");
             throw new Error('Network response was not ok');
         } else {
@@ -149,45 +150,42 @@ document.getElementById('filter-hotels').addEventListener('click', () => filter(
 
 
 
-document.getElementById('fileInput').addEventListener('change', function(event) {
+document.getElementById('fileInput').addEventListener('change', function (event) {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const img = document.createElement('img');
             img.src = e.target.result;
             const preview = document.getElementById('preview');
             preview.innerHTML = '';
             preview.appendChild(img);
         }
-       reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
     }
 });
-document.getElementById('addImageForm').addEventListener('submit', function(event) {
+document.getElementById('addImageForm').addEventListener('submit', function (event) {
     event.preventDefault();
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
     if (file) {
+        console.log("send formdata");
         const formData = new FormData();
         formData.append('image', file);
-        formData.append('title', title.value);
-        formData.append('category', parseInt(category.value));
+        formData.append('title', document.getElementById('title').value);
+        formData.append('category', parseInt(document.getElementById('category').value));
 
         fetch('http://localhost:5678/api/works', {
             method: 'POST',
             headers: {
-                "Authorization": "Bearer "+localStorage.authToken
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             },
             body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            const responseDiv = document.getElementById('response');
-            responseDiv.innerHTML = 'Image téléchargée avec succès : ' + data.message;
-        })
-        .catch(error => {
-            const responseDiv = document.getElementById('response');
-            responseDiv.innerHTML = 'Erreur lors du téléchargement de l\'image : ' + error.message;
+        }).then(response => {
+            loadWorks();
+            alert("work envoyé avec succés");
+        }).catch(error => {
+            alert("formulaire non envoyé, erreur quelque part");
         });
     }
 });
