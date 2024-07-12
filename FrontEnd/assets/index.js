@@ -81,9 +81,11 @@ window.addEventListener('load', () => {
         document.querySelector('#portfolio > div aside').style.display = 'block';
         document.querySelector('body .blackBackground').style.display= 'flex'
     }
-    else
+    else{
         document.getElementById('log').innerHTML = '<a href="login.html">login</a>';
         document.querySelector('body .blackBackground').style.display= 'none'
+    }
+        
 
 });
 
