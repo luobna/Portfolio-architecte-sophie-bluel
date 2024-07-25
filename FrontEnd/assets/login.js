@@ -1,7 +1,9 @@
 let email, motdepasse;
-const errorElement = document.getElementById('error'); // obtenir le block d'erreur (par  défaut est none)
 
-//pour disaficher  le msg  d'erreur  à chaque évenement keyup  sur le  formulaire 
+// obtenir le block d'erreur (par  défaut est none)
+const errorElement = document.getElementById('error'); 
+
+//pour désafficher  le msg  d'erreur  à chaque évenement keyup  sur le  formulaire 
 document.getElementById('loginForm').addEventListener('focusin', function(event){
     errorElement.style.display = 'none';
 });
@@ -13,7 +15,9 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
     motdepasse = document.getElementById('motdepasse').value;
 
     if (email && motdepasse) { // voir si on a rempli les  deux champs (mail et password)
-        fetch('http://localhost:5678/api/users/login', { // l'url de la requête pour accéder au serveur
+
+        // l'url de la requête pour accéder au serveur
+        fetch('http://localhost:5678/api/users/login', { 
             method: 'POST', // type de requête
             headers: { 'Content-Type': 'application/json' }, // nature des données envoyés
             body: JSON.stringify({ "email": email, "password": motdepasse }) // envoie du mail et password
@@ -26,9 +30,10 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
             })
             .then(data => {
                 //si data reçu => reponnse correcte
-                // ....
+                
                 // stocker le token d'authentification pour pouvoir réaliser les envois et suppressions de travaux. 
                 localStorage.setItem('authToken', data.token);
+                
                 //redirectio vers page  d'accuiel
                 window.location.href = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/index.html';
             })

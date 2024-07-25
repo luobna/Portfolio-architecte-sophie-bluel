@@ -80,18 +80,20 @@
 			<div id="page1">
 				<h2>Galerie Photo</h2>
 				<div class="gallery"></div>
+				<div class="delimter"></div>
 				<button id="toPage2">Ajouter une photo</button>
 			</div>
 			<div id="page2">
 				<i id="back" class="fas fa-arrow-left"></i>
 				<h2>Ajout photo</h2>
 				<form id="addImageForm">
-					<div id="addImg">
+					<label id="addImg" for="fileInput">
 						<i class="fa-regular fa-image" style="color: #ced4de;"></i>
-						<img src="./assets/images/boat.png" alt="" width="100" height="100">
-						<label for="fileInput">+ Ajouter une photo</label>
+						<label>+ Ajouter une photo</label>
 						<input  type="file" id="fileInput" name="image" accept="image/*" hidden/>
 						jpg, png: 4mo max
+					</label>
+					<div id="addedImg">
 					</div>
 					<div id="inputs">
 						<label for="title">Titre</label>
@@ -103,13 +105,11 @@
 							<option value="2">Appartements</option>
 							<option value="3">Hotels & restaurants</option>
 						</select>
-						<input type="submit" value="Valider" class="submitv" />
+						<div class="delimter"></div>
+						<input id="sum" type="submit" value="Valider" class="submitv" />
 					</div>
 					
 				</form>
-
-				<div id="preview"></div>
-                <div id="response"></div>
 			</div>
 		</aside>
 	</main>

@@ -1,4 +1,7 @@
-let jsonList, gallery = document.querySelector('#portfolio .gallery'), dialogBoxGallery = document.querySelector('#dialogBox .gallery');
+let jsonList, gallery = document.querySelector('#portfolio .gallery'), 
+dialogBoxGallery = document.querySelector('#dialogBox .gallery');
+
+//POUR AFFICHER LES CATEGORIES ET LES TRAVAUX SUR LA PAGE D'ACCUIL
 function loadWorks() {
     fetch('http://localhost:5678/api/works')
         .then(response => {
@@ -6,11 +9,13 @@ function loadWorks() {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            return response.json(); // Obtenir la réponse en objet javascript JSON
+            return response.json(); // OBTENIR LA RÉPONSE EN JAVASCRIPT JSON
         })
+
+        //RAJOUTER LES WORKS DANS LA BALISE .gallery
         .then(list => {
             jsonList = list;
-            console.log(jsonList); // Utiliser les données reçues
+            console.log(jsonList); // UTILISER LES DONNÉES REÇUES
             gallery.innerHTML = getHtmlList(jsonList);
             dialogBoxGallery.innerHTML = getHtmlList(jsonList, true);
             document.querySelectorAll('#page1 .gallery figure i').forEach(icon => {
@@ -22,6 +27,8 @@ function loadWorks() {
         .catch(error => {
             console.error('There has been a problem with your fetch operation:', error);
         });
+
+        //RAJOUTER LE CHOIX DES CATÉGORIES
     fetch('http://localhost:5678/api/categories')
         .then(response => {
             if (!response.ok) {
@@ -41,6 +48,18 @@ function loadWorks() {
 };
 
 loadWorks();
+
+function filter(nbrCategory = null) {
+    if (nbrCategory) {
+        let htmlList = '';
+        jsonList.forEach(item => {
+            if (item.categoryId == nbrCategory) htmlList += getHtmlItem(item);
+        });
+        gallery.innerHTML = htmlList;
+    } else {
+        gallery.innerHTML = getHtmlList(jsonList);
+    }
+}
 
 function getHtmlList(list, forDialog = null) {
     let htmlList = '';
@@ -75,6 +94,7 @@ function getDialogHtmlItem(item) {
     `;
 }
 
+// POUR SE CONNECTER ET L'AFFICHAGE DU BLOC NOIR
 window.addEventListener('load', () => {
     if (localStorage.getItem('authToken')) {
         document.getElementById('log').innerHTML = '<a id="logout" href="#">logout</a>';
@@ -97,6 +117,14 @@ let openModal = function () {
     closeModal = function () {
         document.querySelector('#dialogBox').style.display = 'none';
         document.querySelector('#dialogBack').style.display = 'none';
+        document.querySelector('#page2').style.display = 'none';
+        document.querySelector('#page1').style.display = 'block';
+        document.getElementById('addedImg').innerHTML = '';
+        document.getElementById('addedImg').style.display = 'none';
+        document.getElementById('sum').style.backgroundColor = 'gary';
+        document.getElementById('addImg').style.display = 'block';
+        document.getElementById('title').value='';
+        document.getElementById('category').value='';
     },
     openPage2 = function () {
         document.querySelector('#page1').style.display = 'none';
@@ -105,10 +133,16 @@ let openModal = function () {
     openPage1 = function () {
         document.querySelector('#page2').style.display = 'none';
         document.querySelector('#page1').style.display = 'block';
+        document.getElementById('addImg').style.display = 'block';
+        document.getElementById('addedImg').innerHTML = '';
+        document.getElementById('addedImg').style.display = 'none';
+        document.getElementById('sum').style.backgroundColor = 'gray';
+        document.getElementById('title').value='';
+        document.getElementById('category').value='';
     },
     logout = function () {
-        localStorage.removeItem('authToken'); // supprimer
-        location.reload();// recharger
+        localStorage.removeItem('authToken'); // SUPPRIMMER
+        location.reload();// RECHARGER
     };
 
 function deleteItem(item, itemId) {
@@ -124,8 +158,8 @@ function deleteItem(item, itemId) {
             alert("You are unauthorized to delete");
             throw new Error('Network response was not ok');
         } else {
-            item.remove(); // remove from DialogBox
-            document.getElementById(`${itemId}`).remove(); // remove from gallery
+            item.remove(); // SUPPRIMER DE DialogBox
+            document.getElementById(`${itemId}`).remove(); // SUPPRIMER DE LA gallery
             alert("Item deleted successfully");
         }
     }).catch(error => {
@@ -142,24 +176,28 @@ document.querySelector('#back').addEventListener('click', openPage1);
 
 
 
-// Attach event listeners to the list items
+// ATTACHER event listeners Á LA LISTE DES ARTICLES 
 document.getElementById('filter-all').addEventListener('click', () => filter());
 document.getElementById('filter-objects').addEventListener('click', () => filter(1));
 document.getElementById('filter-apartments').addEventListener('click', () => filter(2));
 document.getElementById('filter-hotels').addEventListener('click', () => filter(3));
 
-
-
+//POUR RAJOUTER UNE IMAGE
 document.getElementById('fileInput').addEventListener('change', function (event) {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = function (e) {
+            
             const img = document.createElement('img');
             img.src = e.target.result;
-            const preview = document.getElementById('preview');
-            preview.innerHTML = '';
-            preview.appendChild(img);
+            document.getElementById('addedImg').prepend(img);
+
+            document.getElementById('addImg').style.display = 'none';
+            document.getElementById('addedImg').style.display = 'block';
+            
+            document.getElementById('sum').style.backgroundColor = '#1D6154';
+
         }
         reader.readAsDataURL(file);
     }
@@ -183,6 +221,8 @@ document.getElementById('addImageForm').addEventListener('submit', function (eve
             body: formData
         }).then(response => {
             loadWorks();
+            document.getElementById('title').value='';
+            document.getElementById('category').value='';
             alert("work envoyé avec succés");
         }).catch(error => {
             alert("formulaire non envoyé, erreur quelque part");
