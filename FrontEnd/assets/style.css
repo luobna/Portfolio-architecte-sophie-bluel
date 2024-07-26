@@ -289,7 +289,7 @@ form p{
 }
 
 #dialogBox .gallery {
-	width: 80%;
+	width: 70%;
 	margin: auto;
 	display: flex;
 	flex-wrap: wrap;
@@ -345,7 +345,7 @@ form p{
 	margin-bottom: 40px;
     margin-top: 40px;
 }
-#dialogBox button, #addImg label{
+#dialogBox button, #addImg span{
 	font-size: 14px;
 	padding: 8px 60px 8px 60px;
 	margin: auto;
@@ -368,7 +368,7 @@ form p{
 	border-width: 0px;
 	margin-bottom: 10px;
 }
-#addImg label {
+#addImg span {
 	color: #306685;
 	background: #CBD6DC;
 	border-width: 0px;

@@ -33,8 +33,8 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
                 
                 // stocker le token d'authentification pour pouvoir réaliser les envois et suppressions de travaux. 
                 localStorage.setItem('authToken', data.token);
-                
-                //redirectio vers page  d'accuiel
+
+                //redirection vers page  d'accueil
                 window.location.href = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/index.html';
             })
             .catch(error => {

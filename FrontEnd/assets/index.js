@@ -1,5 +1,4 @@
-let jsonList, gallery = document.querySelector('#portfolio .gallery'), 
-dialogBoxGallery = document.querySelector('#dialogBox .gallery');
+let jsonList;
 
 //POUR AFFICHER LES CATEGORIES ET LES TRAVAUX SUR LA PAGE D'ACCUIL
 function loadWorks() {
@@ -14,10 +13,10 @@ function loadWorks() {
 
         //RAJOUTER LES WORKS DANS LA BALISE .gallery
         .then(list => {
-            jsonList = list;
-            console.log(jsonList); // UTILISER LES DONNÉES REÇUES
-            gallery.innerHTML = getHtmlList(jsonList);
-            dialogBoxGallery.innerHTML = getHtmlList(jsonList, true);
+            jsonList = list;// on remplit la variable globalejsonlist, pourque la fct filter ait accés à la list des données
+            console.log(list); // UTILISER LES DONNÉES REÇUES
+            document.querySelector('#portfolio .gallery').innerHTML = getHtmlList(list);
+            document.querySelector('#dialogBox .gallery').innerHTML = getHtmlList(list, true);
             document.querySelectorAll('#page1 .gallery figure i').forEach(icon => {
                 icon.addEventListener('click', function () {
                     deleteItem(icon.parentElement, icon.dataset.id);
@@ -27,39 +26,8 @@ function loadWorks() {
         .catch(error => {
             console.error('There has been a problem with your fetch operation:', error);
         });
-
-        //RAJOUTER LE CHOIX DES CATÉGORIES
-    fetch('http://localhost:5678/api/categories')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(categories => {
-            document.getElementById('category').innerHTML = '<option value="0" selected></option>';
-            categories.forEach(category => {
-                document.getElementById('category').innerHTML += `<option value="${category.id}">${category.name}</option>`;
-            });
-        })
-        .catch(error => {
-            console.error('There has been a problem with your fetch operation:', error);
-        });
 };
-
 loadWorks();
-
-function filter(nbrCategory = null) {
-    if (nbrCategory) {
-        let htmlList = '';
-        jsonList.forEach(item => {
-            if (item.categoryId == nbrCategory) htmlList += getHtmlItem(item);
-        });
-        gallery.innerHTML = htmlList;
-    } else {
-        gallery.innerHTML = getHtmlList(jsonList);
-    }
-}
 
 function getHtmlList(list, forDialog = null) {
     let htmlList = '';
@@ -94,7 +62,31 @@ function getDialogHtmlItem(item) {
     `;
 }
 
-// POUR SE CONNECTER ET L'AFFICHAGE DU BLOC NOIR
+
+//FILTER PART
+
+function filter(nbrCategory = null) {
+    if (nbrCategory) {
+        let htmlList = '';
+        jsonList.forEach(item => {
+            if (item.categoryId == nbrCategory) htmlList += getHtmlItem(item);
+        });
+        document.querySelector('#portfolio .gallery').innerHTML = htmlList;
+    } else {
+        document.querySelector('#portfolio .gallery').innerHTML = getHtmlList(jsonList);
+    }
+}
+
+// ATTACHER event listeners Á LA LISTE DES ARTICLES 
+document.getElementById('filter-all').addEventListener('click', () => filter());
+document.getElementById('filter-objects').addEventListener('click', () => filter(1));
+document.getElementById('filter-apartments').addEventListener('click', () => filter(2));
+document.getElementById('filter-hotels').addEventListener('click', () => filter(3));
+
+
+
+//LOGOUT PART
+// L'AFFICHAGE DU BLOC NOIR ET DES AUTRES ELEMENTS DE LA PAGE SI CLIENT EST DECONNECTE OU PAS
 window.addEventListener('load', () => {
     if (localStorage.getItem('authToken')) {
         document.getElementById('log').innerHTML = '<a id="logout" href="#">logout</a>';
@@ -109,7 +101,13 @@ window.addEventListener('load', () => {
 
 
 });
+//pour deconnecter utilisateur
+let logout = function () {
+    localStorage.removeItem('authToken'); // SUPPRIMMER token
+    location.reload();// RECHARGER la page pour mise à jour
+};
 
+//MODAL MANAGEMET PART
 let openModal = function () {
     document.querySelector('#dialogBack').style.display = 'block';
     document.querySelector('#dialogBox').style.display = 'block';
@@ -123,8 +121,8 @@ let openModal = function () {
         document.getElementById('addedImg').style.display = 'none';
         document.getElementById('sum').style.backgroundColor = 'gary';
         document.getElementById('addImg').style.display = 'block';
-        document.getElementById('title').value='';
-        document.getElementById('category').value='';
+        document.getElementById('title').value = '';
+        document.getElementById('category').value = '';
     },
     openPage2 = function () {
         document.querySelector('#page1').style.display = 'none';
@@ -137,13 +135,32 @@ let openModal = function () {
         document.getElementById('addedImg').innerHTML = '';
         document.getElementById('addedImg').style.display = 'none';
         document.getElementById('sum').style.backgroundColor = 'gray';
-        document.getElementById('title').value='';
-        document.getElementById('category').value='';
-    },
-    logout = function () {
-        localStorage.removeItem('authToken'); // SUPPRIMMER
-        location.reload();// RECHARGER
+        document.getElementById('title').value = '';
+        document.getElementById('category').value = '';
     };
+
+function loadCategories() {
+    
+    //RAJOUTER LE CHOIX DES CATÉGORIES
+    fetch('http://localhost:5678/api/categories')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(categories => {
+            document.getElementById('category').innerHTML = '<option value="0" selected></option>';
+            categories.forEach(category => {
+                document.getElementById('category').innerHTML += `<option value="${category.id}">${category.name}</option>`;
+            });
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+}
+
+loadCategories();
 
 function deleteItem(item, itemId) {
     fetch(`http://localhost:5678/api/works/${itemId}`, {
@@ -158,8 +175,8 @@ function deleteItem(item, itemId) {
             alert("You are unauthorized to delete");
             throw new Error('Network response was not ok');
         } else {
-            item.remove(); // SUPPRIMER DE DialogBox
-            document.getElementById(`${itemId}`).remove(); // SUPPRIMER DE LA gallery
+            //ICI REPONSE OK VEUT DIRE WORK EST SUPPRIMER DANS LA BASE DE DONNEES
+            loadWorks(); //METTRE A JOUR LA PAGE D'ACCUEIL ET LA MODALE POUR NE PAS LAISSER LE WORK SUPPRIMER AFFICHE
             alert("Item deleted successfully");
         }
     }).catch(error => {
@@ -175,27 +192,20 @@ document.querySelector('#toPage2').addEventListener('click', openPage2);
 document.querySelector('#back').addEventListener('click', openPage1);
 
 
-
-// ATTACHER event listeners Á LA LISTE DES ARTICLES 
-document.getElementById('filter-all').addEventListener('click', () => filter());
-document.getElementById('filter-objects').addEventListener('click', () => filter(1));
-document.getElementById('filter-apartments').addEventListener('click', () => filter(2));
-document.getElementById('filter-hotels').addEventListener('click', () => filter(3));
-
 //POUR RAJOUTER UNE IMAGE
 document.getElementById('fileInput').addEventListener('change', function (event) {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = function (e) {
-            
+
             const img = document.createElement('img');
             img.src = e.target.result;
             document.getElementById('addedImg').prepend(img);
 
             document.getElementById('addImg').style.display = 'none';
             document.getElementById('addedImg').style.display = 'block';
-            
+
             document.getElementById('sum').style.backgroundColor = '#1D6154';
 
         }
@@ -220,12 +230,19 @@ document.getElementById('addImageForm').addEventListener('submit', function (eve
             },
             body: formData
         }).then(response => {
-            loadWorks();
-            document.getElementById('title').value='';
-            document.getElementById('category').value='';
-            alert("work envoyé avec succés");
-        }).catch(error => {
-            alert("formulaire non envoyé, erreur quelque part");
+            console.log(response);
+            if (!response.ok) {
+                if (response.status == 401) {
+                    alert("You are unauthorized to add new work");
+                }
+                if (response.status == 400) {
+                    alert("Bad Request: you've sent wrong data");
+                }
+            } else {
+                loadWorks();
+                alert("work envoyé avec succés");
+            }
+
         });
     }
 });
