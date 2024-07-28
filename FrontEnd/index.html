@@ -52,12 +52,7 @@
 				<h2>Mes Projets</h2>
 				<aside><i class="fa-regular fa-pen-to-square"></i>modifier</aside>
 			</div>
-			<ul class="formulaire">
-				<li id="filter-all">Tous</li>
-				<li id="filter-objects">Objets</li>
-				<li id="filter-apartments">Appartements</li>
-				<li id="filter-hotels">Hotels & restaurants</li>
-			</ul>
+			<ul id="filterCategories" class="formulaire"></ul>
 			<div class="gallery">
 			</div>
 		</section>
@@ -90,7 +85,7 @@
 					<label id="addImg" for="fileInput">
 						<i class="fa-regular fa-image" style="color: #ced4de;"></i>
 						<span>+ Ajouter une photo</span>
-						<input  type="file" id="fileInput" name="image" accept="image/*" hidden/>
+						<input type="file" id="fileInput" name="image" accept="image/*" hidden />
 						jpg, png: 4mo max
 					</label>
 					<div id="addedImg">
@@ -99,16 +94,11 @@
 						<label for="title">Titre</label>
 						<input id="title" type="text" />
 						<label for="category">Catégorie</label>
-						<select id="category">
-							<option value="0" selected></option>
-						    <option value="1">Objets</option>
-							<option value="2">Appartements</option>
-							<option value="3">Hotels & restaurants</option>
-						</select>
+						<select id="modelCategory"></select>
 						<div class="delimter"></div>
 						<input id="sum" type="submit" value="Valider" class="submitv" />
 					</div>
-					
+
 				</form>
 			</div>
 		</aside>

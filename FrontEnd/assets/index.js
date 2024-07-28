@@ -1,33 +1,33 @@
 let jsonList;
 
-//POUR AFFICHER LES CATEGORIES ET LES TRAVAUX SUR LA PAGE D'ACCUIL
-function loadWorks() {
-    fetch('http://localhost:5678/api/works')
-        .then(response => {
-            console.log(response)
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json(); // OBTENIR LA RÉPONSE EN JAVASCRIPT JSON
-        })
+async function loadWorks() {
+    try {
+        const response = await fetch('http://localhost:5678/api/works');
+        console.log(response);
+        if (!response.ok) {
+            alert('Network response was not ok, try later');
+        } else {
+            const list = await response.json(); // OBTENIR LA RÉPONSE EN JAVASCRIPT JSON
 
-        //RAJOUTER LES WORKS DANS LA BALISE .gallery
-        .then(list => {
-            jsonList = list;// on remplit la variable globalejsonlist, pourque la fct filter ait accés à la list des données
+            // RAJOUTER LES WORKS DANS LA BALISE .gallery
+            jsonList = list; // on remplit la variable globale jsonList, pour que la fct filter ait accès à la liste des données
             console.log(list); // UTILISER LES DONNÉES REÇUES
             document.querySelector('#portfolio .gallery').innerHTML = getHtmlList(list);
             document.querySelector('#dialogBox .gallery').innerHTML = getHtmlList(list, true);
             document.querySelectorAll('#page1 .gallery figure i').forEach(icon => {
                 icon.addEventListener('click', function () {
-                    deleteItem(icon.parentElement, icon.dataset.id);
+                    deleteWork(icon.dataset.id);
                 });
             });
-        })
-        .catch(error => {
-            console.error('There has been a problem with your fetch operation:', error);
-        });
-};
+        }
+    } catch (error) {
+        alert("An error has occored, Works haven't been loaded, please try later");
+    }
+}
+
+// Appel de la fonction
 loadWorks();
+
 
 function getHtmlList(list, forDialog = null) {
     let htmlList = '';
@@ -63,10 +63,57 @@ function getDialogHtmlItem(item) {
 }
 
 
-//FILTER PART
+// loading categories part (for filter and model)
 
+async function loadCategories() {
+    try {
+        const response = await fetch('http://localhost:5678/api/categories');
+
+        if (!response.ok) {
+            // Handle HTTP errors by throwing an error to jump to the catch block
+            alert("Categories unloaded, try later");
+            throw new Error(`Network response was not ok. Status: ${response.status}`);
+        }
+        const categories = await response.json();
+        fillInDomCategories(categories); // remplir les categories de filter et du model
+    } catch (error) {
+        alert("An error has occored, Categories haven't been loaded, please try later");
+    }
+}
+
+
+
+function fillInDomCategories(categories) {
+
+    // give first values
+    document.getElementById('modelCategory').innerHTML = '<option value="0" selected></option>'; // first value for model
+    addFilterCategory('Tous', null); // first value for filter
+
+    // give other values
+    categories.forEach(category => {
+        // fill in Model categories list
+        document.getElementById('modelCategory').innerHTML += `<option value="${category.id}">${category.name}</option>`;
+        // fill in filter categories list
+        addFilterCategory(category.name, category.id);
+    });
+}
+
+function addFilterCategory(categoryName, categoryId) {
+    // create filter and its name
+    const filterItem = document.createElement('li'); filterItem.textContent = categoryName;
+    // add filter to the filter list "<ul></ul>"
+    document.getElementById('filterCategories').appendChild(filterItem);
+    // create an event on each filter category
+    filterItem.addEventListener('click', () => filter(categoryId));
+}
+
+loadCategories();
+
+
+// FILTER fonction that makes the filtering
+// it's executed when we click on a "category filter"
 function filter(nbrCategory = null) {
-    if (nbrCategory) {
+    if (nbrCategory != null) {
         let htmlList = '';
         jsonList.forEach(item => {
             if (item.categoryId == nbrCategory) htmlList += getHtmlItem(item);
@@ -77,13 +124,6 @@ function filter(nbrCategory = null) {
     }
 }
 
-// ATTACHER event listeners Á LA LISTE DES ARTICLES 
-document.getElementById('filter-all').addEventListener('click', () => filter());
-document.getElementById('filter-objects').addEventListener('click', () => filter(1));
-document.getElementById('filter-apartments').addEventListener('click', () => filter(2));
-document.getElementById('filter-hotels').addEventListener('click', () => filter(3));
-
-
 
 //LOGOUT PART
 // L'AFFICHAGE DU BLOC NOIR ET DES AUTRES ELEMENTS DE LA PAGE SI CLIENT EST DECONNECTE OU PAS
@@ -92,6 +132,7 @@ window.addEventListener('load', () => {
         document.getElementById('log').innerHTML = '<a id="logout" href="#">logout</a>';
         document.getElementById('logout').addEventListener('click', logout);
         document.querySelector('#portfolio > div aside').style.display = 'block';
+        document.querySelector('#filterCategories').style.display = 'none';
         document.querySelector('body .blackBackground').style.display = 'flex'
     }
     else {
@@ -122,7 +163,7 @@ let openModal = function () {
         document.getElementById('sum').style.backgroundColor = 'gary';
         document.getElementById('addImg').style.display = 'block';
         document.getElementById('title').value = '';
-        document.getElementById('category').value = '';
+        document.getElementById('modelCategory').value = '';
     },
     openPage2 = function () {
         document.querySelector('#page1').style.display = 'none';
@@ -136,53 +177,32 @@ let openModal = function () {
         document.getElementById('addedImg').style.display = 'none';
         document.getElementById('sum').style.backgroundColor = 'gray';
         document.getElementById('title').value = '';
-        document.getElementById('category').value = '';
+        document.getElementById('modelCategory').value = '';
     };
 
-function loadCategories() {
-    
-    //RAJOUTER LE CHOIX DES CATÉGORIES
-    fetch('http://localhost:5678/api/categories')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+
+async function deleteWork(itemId) {
+    try {
+        const response = await fetch(`http://localhost:5678/api/works/${itemId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             }
-            return response.json();
-        })
-        .then(categories => {
-            document.getElementById('category').innerHTML = '<option value="0" selected></option>';
-            categories.forEach(category => {
-                document.getElementById('category').innerHTML += `<option value="${category.id}">${category.name}</option>`;
-            });
-        })
-        .catch(error => {
-            console.error('There has been a problem with your fetch operation:', error);
         });
-}
-
-loadCategories();
-
-function deleteItem(item, itemId) {
-    fetch(`http://localhost:5678/api/works/${itemId}`, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
-    }).then(response => {
         console.log(response);
         if (!response.ok) {
-            if (response.status == 401);
-            alert("You are unauthorized to delete");
+            if (response.status == 401) {
+                alert("You are unauthorized to delete");
+            }
             throw new Error('Network response was not ok');
         } else {
             //ICI REPONSE OK VEUT DIRE WORK EST SUPPRIMER DANS LA BASE DE DONNEES
             loadWorks(); //METTRE A JOUR LA PAGE D'ACCUEIL ET LA MODALE POUR NE PAS LAISSER LE WORK SUPPRIMER AFFICHE
             alert("Item deleted successfully");
         }
-    }).catch(error => {
-        console.error('There has been a problem with your fetch operation:', error);
-    });
-};
+    } catch (error) { }
+}
+
 
 
 document.querySelector('#portfolio > div aside').addEventListener('click', openModal);
@@ -212,6 +232,7 @@ document.getElementById('fileInput').addEventListener('change', function (event)
         reader.readAsDataURL(file);
     }
 });
+
 document.getElementById('addImageForm').addEventListener('submit', function (event) {
     event.preventDefault();
     const fileInput = document.getElementById('fileInput');
@@ -221,28 +242,36 @@ document.getElementById('addImageForm').addEventListener('submit', function (eve
         const formData = new FormData();
         formData.append('image', file);
         formData.append('title', document.getElementById('title').value);
-        formData.append('category', parseInt(document.getElementById('category').value));
+        formData.append('category', parseInt(document.getElementById('modelCategory').value));
+        // submit des donnes (envoie vers backend)
+        sendWork(formData);
+    }
+});
 
-        fetch('http://localhost:5678/api/works', {
+
+async function sendWork(formData) {
+    try {
+        const response = await fetch('http://localhost:5678/api/works', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             },
             body: formData
-        }).then(response => {
-            console.log(response);
-            if (!response.ok) {
-                if (response.status == 401) {
-                    alert("You are unauthorized to add new work");
-                }
-                if (response.status == 400) {
-                    alert("Bad Request: you've sent wrong data");
-                }
-            } else {
-                loadWorks();
-                alert("work envoyé avec succés");
-            }
-
         });
-    }
-});
+        console.log(response);
+        if (!response.ok) {
+            if (response.status == 401) {
+                alert("You are unauthorized to add new work");
+            }
+            if (response.status == 400) {
+                alert("Bad Request: you've sent wrong data");
+            }
+            throw new Error('Network response was not ok');
+        } else {
+            loadWorks();
+            alert("Work sent successfully");
+        }
+    } catch (error) {
+        alert("An error has occured, please try later");
+     }
+}
